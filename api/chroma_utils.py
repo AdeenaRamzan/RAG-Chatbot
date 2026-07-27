@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader, UnstructuredHTMLLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain_chroma import Chroma
 from typing import List
 from langchain_core.documents import Document
@@ -10,7 +10,7 @@ import os
 
 # Initialize text splitter and embedding function
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200, length_function=len)
-embedding_function = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+embedding_function = FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5")
 
 # Initialize Chroma vector store
 chroma_dir = "/tmp/chroma_db" if os.environ.get("VERCEL") else "./chroma_db"

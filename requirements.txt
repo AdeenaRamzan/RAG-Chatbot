@@ -3,7 +3,7 @@ langchain-groq
 langchain-core
 langchain-community
 langchain-classic
-langchain-huggingface
+fastembed
 docx2txt
 pypdf
 langchain-chroma
@@ -11,4 +11,3 @@ python-multipart
 fastapi
 uvicorn
 python-dotenv
-sentence-transformers
