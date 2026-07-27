@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 load_dotenv()
 from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader, UnstructuredHTMLLoader
@@ -6,6 +7,7 @@ from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain_chroma import Chroma
 from typing import List
 from langchain_core.documents import Document
+
 is_vercel = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
 if is_vercel:
     os.environ["HF_HOME"] = "/tmp/hf_home"
