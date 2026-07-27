@@ -1,0 +1,11 @@
+.env
+.git
+.gitignore
+chroma_db
+rag_app.db
+documentation/
+docs/
+notes.txt
+app/
+__pycache__/
+*.pyc

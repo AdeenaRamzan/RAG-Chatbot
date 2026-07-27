@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAG Chatbot — Intelligent Document Assistant</title>
+  <meta name="description" content="A conversational RAG chatbot that lets you upload documents and ask questions with AI-powered answers." />
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- ═══════ SIDEBAR ═══════ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="logo-icon">🧠</div>
+          <span class="logo-text">RAG Chatbot</span>
+        </div>
+      </div>
+
+      <div class="sidebar-content">
+        <!-- Model Selection -->
+        <div class="sidebar-section">
+          <div class="section-title">Model</div>
+          <div class="model-selector">
+            <select class="model-select" id="modelSelect">
+              <option value="llama-3.3-70b-versatile">Llama 3.3 70B</option>
+              <option value="llama-3.1-8b-instant">Llama 3.1 8B Instant</option>
+              <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- File Upload -->
+        <div class="sidebar-section">
+          <div class="section-title">Upload Document</div>
+          <div class="upload-zone" id="uploadZone">
+            <div class="upload-zone-icon">📄</div>
+            <div class="upload-zone-text">Drop a file here or click to browse</div>
+            <div class="upload-zone-hint">PDF, DOCX, or HTML</div>
+            <input type="file" class="upload-file-input" id="fileInput" accept=".pdf,.docx,.html" />
+          </div>
+          <div class="upload-progress" id="uploadProgress">
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Uploading...</div>
+          </div>
+        </div>
+
+        <!-- Document List -->
+        <div class="sidebar-section">
+          <div class="section-title">Documents</div>
+          <div class="doc-list" id="docList">
+            <div class="doc-empty">
+              <div class="doc-empty-icon">📭</div>
+              <div>No documents uploaded yet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Chat Button -->
+      <button class="new-chat-btn" id="newChatBtn">
+        <span>✨</span> New Chat
+      </button>
+    </aside>
+
+    <!-- ═══════ MAIN CHAT ═══════ -->
+    <main class="main-area">
+      <!-- Chat Header -->
+      <header class="chat-header">
+        <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">☰</button>
+        <h1 class="chat-header-title">Chat</h1>
+        <span class="chat-header-model" id="headerModel">Llama 3.3 70B</span>
+      </header>
+
+      <!-- Chat Messages -->
+      <div class="chat-messages" id="chatMessages">
+        <div class="welcome-screen" id="welcomeScreen">
+          <div class="welcome-icon">🧠</div>
+          <h2 class="welcome-title">RAG Chatbot</h2>
+          <p class="welcome-subtitle">Upload a document and start asking questions. I'll use AI to find answers from your content.</p>
+          <div class="welcome-tips">
+            <span class="welcome-tip" data-tip="What is this document about?">💡 What is this about?</span>
+            <span class="welcome-tip" data-tip="Summarize the key points">📝 Summarize key points</span>
+            <span class="welcome-tip" data-tip="What are the main conclusions?">🎯 Main conclusions?</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input -->
+      <div class="chat-input-area">
+        <div class="chat-input-wrapper">
+          <textarea
+            class="chat-input"
+            id="chatInput"
+            placeholder="Ask a question about your documents..."
+            rows="1"
+          ></textarea>
+          <button class="send-btn" id="sendBtn" title="Send message">➤</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
