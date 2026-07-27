@@ -1,28 +1,31 @@
-# RAG Chatbot with Conversational Memory
+# 🧠 Conversational RAG Chatbot
 
-A Retrieval-Augmented Generation (RAG) chatbot built with LangChain that supports conversational memory for follow-up questions. Features FastAPI backend and Streamlit frontend with document upload capabilities.
-
----
-
-## 🚀 Features
-
-- **Document Upload**: Supports PDF, DOCX, HTML files (200MB limit per file)
-- **Conversational Memory**: Maintains context for follow-up questions
-- **Multiple Models**: Choose between GPT-4o-mini and other model options
-- **Vector Storage**: Efficient document retrieval with ChromaDB
-- **Interactive API**: FastAPI backend with Swagger documentation
-- **LangSmith Integration**: Built-in tracing and monitoring
+An ultra-fast, modern **Retrieval-Augmented Generation (RAG)** chatbot powered by **Groq AI**, **LangChain**, **HuggingFace Embeddings**, and **FastAPI**. Features a sleek, custom **Dark Glassmorphic UI** with document drag-and-drop upload and real-time conversational memory.
 
 ---
 
-## ⚙️ Configuration
+## ⚡ Key Features
 
-Create a `.env` file in the root with the following variables:
+- **🚀 Ultra-Fast Inference via Groq**: Powered by `llama-3.3-70b-versatile`, `llama-3.1-8b-instant`, and `mixtral-8x7b-32768`.
+- **✨ Custom Glassmorphism UI**: Built with modern CSS/JS featuring responsive design, dark mode, smooth message animations, auto-scrolling, and markdown support.
+- **📄 Document Management**: Drag-and-drop support for **PDF**, **DOCX**, and **HTML** files with live status and delete controls.
+- **🆓 100% Free Vector Embeddings**: Utilizes HuggingFace's `all-MiniLM-L6-v2` via `sentence-transformers` for local vector storage in ChromaDB.
+- **💬 Conversational Memory**: Preserves context and session history across follow-up queries.
+- **⚡ Vercel Ready**: Pre-configured `vercel.json` for 1-click free serverless deployment.
 
-```env
-OPENAI_API_KEY=your_openai_api_key
-LANGSMITH_API_KEY=your_langsmith_api_key
-````
+---
+
+## 🛠️ Technology Stack
+
+| Component | Technology |
+| :--- | :--- |
+| **Backend Framework** | [FastAPI](https://fastapi.tiangolo.com/) |
+| **LLM Provider** | [Groq AI](https://groq.com/) (`ChatGroq`) |
+| **Orchestration** | [LangChain](https://www.langchain.com/) |
+| **Embeddings** | [HuggingFace](https://huggingface.co/) (`all-MiniLM-L6-v2`) |
+| **Vector Storage** | [ChromaDB](https://www.trychroma.com/) |
+| **Frontend** | Custom HTML5, Vanilla CSS3 (Glassmorphism), ES6+ JavaScript |
+| **Database** | SQLite (`rag_app.db`) for chat logs & metadata |
 
 ---
 
@@ -31,229 +34,99 @@ LANGSMITH_API_KEY=your_langsmith_api_key
 ```
 RAG-CHATBOT/
 ├── api/                         # FastAPI backend server
-│   ├── __pycache__/             # Python bytecode cache
-│   ├── chroma_db/               # ChromaDB vector storage
-│   ├── app.log                  # Logging file
-│   ├── chroma_utils.py          # ChromaDB utilities
-│   ├── db_utils.py              # Chat history & metadata DB logic
-│   ├── langchain_utils.py       # LangChain RAG pipeline
-│   ├── main.py                  # FastAPI entry point
-│   ├── pydantic_models.py       # Request/response validation
-│   └── rag_app.db               # SQLite DB
-├── app/                         # Streamlit frontend
-│   ├── __pycache__/             # Python bytecode cache
-│   ├── api_utils.py             # FastAPI client utils
-│   ├── chat_interface.py        # Chat UI
-│   ├── sidebar.py               # File upload & model switch
-│   └── streamlit_app.py         # Streamlit app
+│   ├── chroma_utils.py          # Document loader & ChromaDB vector store logic
+│   ├── db_utils.py              # SQLite session & chat history management
+│   ├── langchain_utils.py       # LangChain RAG pipeline with Groq LLM
+│   ├── main.py                  # FastAPI server & route handlers
+│   └── pydantic_models.py       # Request/Response schemas
+├── frontend/                    # Custom Web UI
+│   ├── index.html               # Main application template
+│   ├── style.css                # Glassmorphic dark design system
+│   └── script.js                # Frontend API client & interactive UI
 ├── docs/                        # Sample documents
-├── documentation/               # Guides & screenshots
-│   ├── screenshots/             # UI screenshots
-│   ├── api_reference.md         # API docs
-│   └── user_guide.md            # Manual
-├── .env                         # Env variables
-├── .gitignore                   # Git ignore rules
-├── LICENSE                      # MIT License
-├── notes.txt                    # Dev notes
-├── README.md                    # This file
-└── requirements.txt             # Dependencies
+├── documentation/               # Documentation guides
+├── .env                         # Environment variables
+├── .env.example                 # Example configuration
+├── vercel.json                  # Vercel deployment configuration
+├── requirements.txt             # Python dependencies
+└── README.md                    # Project documentation
 ```
 
 ---
 
-## ⚡ Quick Start
+## ⚙️ Configuration & Setup
 
-### 🔧 Prerequisites
+### 1. Prerequisites
+- Python 3.9 or higher
+- A free **Groq API Key** (Get one at [console.groq.com](https://console.groq.com))
 
-* Python 3.9+
-* OpenAI API Key
-* LangSmith API Key (optional)
+### 2. Installation
 
-### 🛠 Installation
-
-1. **Clone the repository**
-
+1. **Clone the repository**:
    ```bash
    git clone https://github.com/YOUR-USERNAME/rag-chatbot.git
    cd rag-chatbot
    ```
 
-2. **Install dependencies**
-
+2. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Configure environment**
-
-   Create a `.env` file using the sample and add your keys:
-
-   ```bash
-   cp .env.example .env
+3. **Configure environment variables**:
+   Create a `.env` file in the root directory:
+   ```env
+   GROQ_API_KEY=your_groq_api_key_here
+   
+   # Optional LangSmith Tracing
+   LANGCHAIN_TRACING_V2=true
+   LANGCHAIN_API_KEY=your_langsmith_api_key_here
+   LANGCHAIN_PROJECT="rag-chatbot"
    ```
-
-4. **Run the FastAPI backend**
-
-   ```bash
-   cd api
-   uvicorn main:app --reload --port 8000
-   ```
-
-5. **Run the Streamlit frontend**
-
-   In a new terminal:
-
-   ```bash
-   cd app
-   streamlit run streamlit_app.py --server.port 8500
-   ```
-
-6. **Access the application**
-
-   * Streamlit UI: [http://localhost:8500](http://localhost:8500)
-   * Swagger Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## 📚 Usage Guide
+## 🚀 Quick Start
 
-### 📤 Upload Documents
+Run the unified application server:
 
-1. Open the Streamlit UI
-2. Use the sidebar to upload PDF, DOCX, or HTML files
-3. Uploaded docs are indexed into ChromaDB
-
-### 💬 Chat with Documents
-
-1. Ask a question related to the uploaded content
-2. Ask follow-up questions — context is remembered
-3. Switch models via the sidebar dropdown
-
----
-
-## 🧪 API Usage Example (Python)
-
-```python
-import requests
-
-# Upload a document
-files = {'file': open('document.pdf', 'rb')}
-upload_res = requests.post('http://localhost:8000/upload-doc', files=files)
-
-# Chat with the document
-chat_payload = {
-    "message": "What is this document about?",
-    "session_id": "user123"
-}
-chat_res = requests.post('http://localhost:8000/chat', json=chat_payload)
-print(chat_res.json())
+```bash
+cd api
+python -m uvicorn main:app --reload --port 8000
 ```
+
+Open your browser and visit:
+👉 **[http://localhost:8000](http://localhost:8000)**
+
+*(Swagger API Documentation available at [http://localhost:8000/docs](http://localhost:8000/docs))*
+
+---
+
+## 🌐 Deploy to Vercel (100% Free)
+
+This project includes built-in Vercel Serverless support (`vercel.json`).
+
+### Deploy via GitHub:
+1. Push your code to a GitHub repository.
+2. Go to **[vercel.com/new](https://vercel.com/new)** and import your repository.
+3. Add the Environment Variable:
+   - `GROQ_API_KEY`: `your_groq_api_key`
+4. Click **Deploy**.
 
 ---
 
 ## 🔌 API Endpoints
 
-| Endpoint      | Method | Description                  |
-| ------------- | ------ | ---------------------------- |
-| `/chat`       | POST   | Chat with uploaded documents |
-| `/upload-doc` | POST   | Upload and index documents   |
-| `/list-docs`  | GET    | List all uploaded documents  |
-| `/delete-doc` | POST   | Delete a specific document   |
-
----
-
-## 🧠 Architecture Overview
-
-1. **Document Ingestion**: Files are split into text chunks
-2. **Embedding**: Text is embedded using OpenAI embeddings
-3. **Storage**: Embeddings are stored in ChromaDB
-4. **Retrieval**: Relevant chunks are fetched for user queries
-5. **Generation**: LangChain passes context and query to LLM
-6. **Memory**: Session IDs preserve conversation history
-
----
-
-## 🛠 Environment Setup
-
-1. **Copy template and configure**
-
-   ```bash
-   cp .env.example .env
-   ```
-
-2. **Edit `.env` and add keys**
-
-   * Get your OpenAI API key from: [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys)
-   * (Optional) Get LangSmith API key from: [https://smith.langchain.com/](https://smith.langchain.com/)
-
-3. **Keep `.env` private**
-
-   `.env` is included in `.gitignore` to avoid committing secrets.
-
----
-
-## 🔑 Required API Keys
-
-* **OPENAI\_API\_KEY**: Required for embeddings and completions
-* **LANGSMITH\_API\_KEY**: For request tracing and logging
-
----
-
-## 🖼 Screenshots
-
-Screenshots are located in:
-
-```
-documentation/screenshots/
-```
-
----
-
-## 🤝 Contributing
-
-We welcome contributions!
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes and commit
-4. Open a pull request
+| Endpoint | Method | Description |
+| :--- | :--- | :--- |
+| `/` | `GET` | Serves the main web interface |
+| `/chat` | `POST` | Processes user questions via RAG chain |
+| `/upload-doc` | `POST` | Uploads and indexes PDF/DOCX/HTML documents |
+| `/list-docs` | `GET` | Returns list of currently indexed documents |
+| `/delete-doc` | `POST` | Deletes a document from vector store and DB |
 
 ---
 
 ## 📜 License
 
-This project is licensed under the MIT License.
-
-```
-MIT License
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-...
-```
-
-See the full [LICENSE](LICENSE) file for more details.
-
----
-
-## 🙏 Acknowledgments
-
-* Built with [LangChain](https://www.langchain.com/)
-* Vector storage by [ChromaDB](https://www.trychroma.com/)
-* UI by [Streamlit](https://streamlit.io/)
-* Backend by [FastAPI](https://fastapi.tiangolo.com/)
-* Observability via [LangSmith](https://smith.langchain.com/)
-
----
-
-## 📬 Contact
-
-Have feedback, issues, or ideas?
-
-* Open an issue on GitHub
-* Submit a pull request
-* Contact the maintainer (aryanmahawar205@gmail.com)
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
