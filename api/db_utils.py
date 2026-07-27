@@ -3,9 +3,8 @@ load_dotenv()
 import sqlite3
 from datetime import datetime
 
-import os
-
-DB_NAME = "/tmp/rag_app.db" if os.environ.get("VERCEL") else "rag_app.db"
+is_vercel = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
+DB_NAME = "/tmp/rag_app.db" if is_vercel else "rag_app.db"
 
 def get_db_connection():
     conn = sqlite3.connect(DB_NAME)

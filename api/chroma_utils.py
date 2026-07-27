@@ -6,14 +6,21 @@ from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain_chroma import Chroma
 from typing import List
 from langchain_core.documents import Document
-import os
+is_vercel = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
+if is_vercel:
+    os.environ["HF_HOME"] = "/tmp/hf_home"
+    os.environ["FASTEMBED_CACHE_PATH"] = "/tmp/fastembed_cache"
 
 # Initialize text splitter and embedding function
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200, length_function=len)
-embedding_function = FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5")
+cache_dir = "/tmp/fastembed_cache" if is_vercel else None
+embedding_function = FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5", cache_dir=cache_dir)
 
 # Initialize Chroma vector store
-chroma_dir = "/tmp/chroma_db" if os.environ.get("VERCEL") else "./chroma_db"
+chroma_dir = "/tmp/chroma_db" if is_vercel else "./chroma_db"
+if is_vercel and not os.path.exists(chroma_dir):
+    os.makedirs(chroma_dir, exist_ok=True)
+
 vectorstore = Chroma(persist_directory=chroma_dir, embedding_function=embedding_function)
 
 def load_and_split_document(file_path: str) -> List[Document]:

@@ -13,8 +13,8 @@ import uuid
 import logging
 import shutil
 
-# Set up logging
-logging.basicConfig(filename='app.log', level=logging.INFO)
+# Set up logging to stdout/stderr (prevents read-only filesystem crash on Vercel)
+logging.basicConfig(level=logging.INFO)
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -28,14 +28,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve frontend static files (CSS, JS)
+# Serve frontend static files if directory exists
 frontend_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
-app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
+if os.path.exists(frontend_dir):
+    app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
 
 # Serve frontend index.html at root
 @app.get("/")
 def serve_frontend():
-    return FileResponse(os.path.join(frontend_dir, "index.html"))
+    index_file = os.path.join(frontend_dir, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
+    return {"status": "API is running"}
 
 @app.post("/chat", response_model=QueryResponse)
 def chat(query_input: QueryInput):
