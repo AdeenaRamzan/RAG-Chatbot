@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from dotenv import load_dotenv
 load_dotenv()
 from langchain_groq import ChatGroq
@@ -7,7 +11,6 @@ from langchain_classic.chains import create_history_aware_retriever, create_retr
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 from typing import List
 from langchain_core.documents import Document
-import os
 from chroma_utils import vectorstore
 
 retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
