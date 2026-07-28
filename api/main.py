@@ -69,7 +69,8 @@ def upload_and_index_document(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail=f"Unsupported file type. Allowed types are: {', '.join(allowed_extensions)}")
 
     temp_dir = "/tmp" if os.environ.get("VERCEL") else "."
-    temp_file_path = os.path.join(temp_dir, f"temp_{file.filename}")
+    safe_filename = "".join(c for c in file.filename if c.isalnum() or c in "._- ")
+    temp_file_path = os.path.join(temp_dir, f"temp_{uuid.uuid4().hex[:8]}_{safe_filename}")
 
     try:
         # Save the uploaded file to a temporary file
@@ -77,16 +78,23 @@ def upload_and_index_document(file: UploadFile = File(...)):
             shutil.copyfileobj(file.file, buffer)
 
         file_id = insert_document_record(file.filename)
-        success = index_document_to_chroma(temp_file_path, file_id)
+        success, err_msg = index_document_to_chroma(temp_file_path, file_id)
 
         if success:
             return {"message": f"File {file.filename} has been successfully uploaded and indexed.", "file_id": file_id}
         else:
             delete_document_record(file_id)
-            raise HTTPException(status_code=500, detail=f"Failed to index {file.filename}.")
+            raise HTTPException(status_code=500, detail=f"Failed to index {file.filename}: {err_msg}")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Upload error for {file.filename}: {str(e)}")
     finally:
         if os.path.exists(temp_file_path):
-            os.remove(temp_file_path)
+            try:
+                os.remove(temp_file_path)
+            except Exception:
+                pass
 
 @app.get("/list-docs", response_model=list[DocumentInfo])
 def list_documents():

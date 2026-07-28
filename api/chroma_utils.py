@@ -43,19 +43,39 @@ def ensure_vectorstore_populated():
         print(f"Error ensuring vectorstore populated: {e}")
 
 def load_and_split_document(file_path: str) -> List[Document]:
-    if file_path.endswith('.pdf'):
-        loader = PyPDFLoader(file_path)
-    elif file_path.endswith('.docx'):
+    documents = []
+    file_path_lower = file_path.lower()
+
+    if file_path_lower.endswith('.pdf'):
+        try:
+            loader = PyPDFLoader(file_path)
+            documents = loader.load()
+        except Exception as pdf_err:
+            print(f"PyPDFLoader failed ({pdf_err}), attempting pypdf.PdfReader fallback...")
+            try:
+                from pypdf import PdfReader
+                reader = PdfReader(file_path)
+                for i, page in enumerate(reader.pages):
+                    text = page.extract_text() or ""
+                    if text.strip():
+                        documents.append(Document(page_content=text, metadata={"source": file_path, "page": i}))
+            except Exception as fallback_err:
+                raise ValueError(f"Failed to parse PDF text: {fallback_err}")
+    elif file_path_lower.endswith('.docx'):
         loader = Docx2txtLoader(file_path)
-    elif file_path.endswith('.html'):
+        documents = loader.load()
+    elif file_path_lower.endswith('.html'):
         loader = UnstructuredHTMLLoader(file_path)
+        documents = loader.load()
     else:
         raise ValueError(f"Unsupported file type: {file_path}")
 
-    documents = loader.load()
+    if not documents or sum(len(d.page_content.strip()) for d in documents) == 0:
+        raise ValueError("Could not extract any readable text from the file. The document may be empty or an image-only scan.")
+
     return text_splitter.split_documents(documents)
 
-def index_document_to_chroma(file_path: str, file_id: int) -> bool:
+def index_document_to_chroma(file_path: str, file_id: int):
     try:
         splits = load_and_split_document(file_path)
 
@@ -68,10 +88,11 @@ def index_document_to_chroma(file_path: str, file_id: int) -> bool:
         # Save chunks to SQLite for serverless persistence across cold starts
         chunk_texts = [split.page_content for split in splits]
         insert_document_chunks(file_id, chunk_texts)
-        return True
+        return True, ""
     except Exception as e:
-        print(f"Error indexing document: {e}")
-        return False
+        err_msg = str(e)
+        print(f"Error indexing document: {err_msg}")
+        return False, err_msg
     
 def delete_doc_from_chroma(file_id: int):
     try:
