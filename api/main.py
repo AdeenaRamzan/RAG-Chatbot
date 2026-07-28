@@ -84,7 +84,10 @@ def upload_and_index_document(file: UploadFile = File(...)):
             return {"message": f"File {file.filename} has been successfully uploaded and indexed.", "file_id": file_id}
         else:
             delete_document_record(file_id)
-            raise HTTPException(status_code=500, detail=f"Failed to index {file.filename}: {err_msg}")
+            if any(term in err_msg.lower() for term in ["extract", "parse", "unsupported", "image-only", "readable"]):
+                raise HTTPException(status_code=400, detail=f"Upload failed: {err_msg}")
+            else:
+                raise HTTPException(status_code=500, detail=f"Upload failed ({file.filename}): {err_msg}")
     except HTTPException:
         raise
     except Exception as e:

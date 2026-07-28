@@ -79,11 +79,19 @@ def index_document_to_chroma(file_path: str, file_id: int):
     try:
         splits = load_and_split_document(file_path)
 
+        # Cap max splits per document to prevent Vercel 10-second function timeout
+        if len(splits) > 150:
+            splits = splits[:150]
+
         # Add metadata to each split
         for split in splits:
             split.metadata['file_id'] = file_id
 
-        vectorstore.add_documents(splits)
+        # Batch vector insertion to prevent CPU spikes / memory limits
+        batch_size = 20
+        for i in range(0, len(splits), batch_size):
+            batch = splits[i:i + batch_size]
+            vectorstore.add_documents(batch)
         
         # Save chunks to SQLite for serverless persistence across cold starts
         chunk_texts = [split.page_content for split in splits]
