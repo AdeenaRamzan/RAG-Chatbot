@@ -60,11 +60,42 @@ def insert_document_record(filename):
     conn.close()
     return file_id
 
+def create_document_chunks():
+    conn = get_db_connection()
+    conn.execute('''CREATE TABLE IF NOT EXISTS document_chunks
+                    (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                     file_id INTEGER,
+                     chunk_text TEXT)''')
+    conn.close()
+
+def insert_document_chunks(file_id, chunks):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.executemany('INSERT INTO document_chunks (file_id, chunk_text) VALUES (?, ?)',
+                       [(file_id, chunk) for chunk in chunks])
+    conn.commit()
+    conn.close()
+
+def get_all_document_chunks():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT file_id, chunk_text FROM document_chunks')
+    rows = cursor.fetchall()
+    conn.close()
+    return [{"file_id": row["file_id"], "chunk_text": row["chunk_text"]} for row in rows]
+
+def delete_document_chunks_by_file_id(file_id):
+    conn = get_db_connection()
+    conn.execute('DELETE FROM document_chunks WHERE file_id = ?', (file_id,))
+    conn.commit()
+    conn.close()
+
 def delete_document_record(file_id):
     conn = get_db_connection()
     conn.execute('DELETE FROM document_store WHERE id = ?', (file_id,))
     conn.commit()
     conn.close()
+    delete_document_chunks_by_file_id(file_id)
     return True
 
 def get_all_documents():
@@ -78,3 +109,4 @@ def get_all_documents():
 # Initialize the database tables
 create_application_logs()
 create_document_store()
+create_document_chunks()

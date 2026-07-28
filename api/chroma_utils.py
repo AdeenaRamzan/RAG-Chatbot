@@ -25,6 +25,23 @@ if is_vercel and not os.path.exists(chroma_dir):
 
 vectorstore = Chroma(persist_directory=chroma_dir, embedding_function=embedding_function)
 
+from db_utils import insert_document_chunks, get_all_document_chunks, delete_document_chunks_by_file_id
+
+def ensure_vectorstore_populated():
+    try:
+        count = vectorstore._collection.count()
+        if count == 0:
+            saved_chunks = get_all_document_chunks()
+            if saved_chunks:
+                docs = [
+                    Document(page_content=item["chunk_text"], metadata={"file_id": item["file_id"]})
+                    for item in saved_chunks
+                ]
+                vectorstore.add_documents(docs)
+                print(f"Auto-restored {len(docs)} document chunks into vectorstore")
+    except Exception as e:
+        print(f"Error ensuring vectorstore populated: {e}")
+
 def load_and_split_document(file_path: str) -> List[Document]:
     if file_path.endswith('.pdf'):
         loader = PyPDFLoader(file_path)
@@ -47,6 +64,10 @@ def index_document_to_chroma(file_path: str, file_id: int) -> bool:
             split.metadata['file_id'] = file_id
 
         vectorstore.add_documents(splits)
+        
+        # Save chunks to SQLite for serverless persistence across cold starts
+        chunk_texts = [split.page_content for split in splits]
+        insert_document_chunks(file_id, chunk_texts)
         return True
     except Exception as e:
         print(f"Error indexing document: {e}")
@@ -58,6 +79,7 @@ def delete_doc_from_chroma(file_id: int):
         print(f"Found {len(docs['ids'])} document chunks for file_id {file_id}")
 
         vectorstore._collection.delete(where={"file_id": file_id})
+        delete_document_chunks_by_file_id(file_id)
         print(f"Deleted all documents with file_id {file_id}")
 
         return True
