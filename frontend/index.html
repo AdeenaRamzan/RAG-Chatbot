@@ -4,103 +4,176 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RAG Chatbot — Intelligent Document Assistant</title>
-  <meta name="description" content="A conversational RAG chatbot that lets you upload documents and ask questions with AI-powered answers." />
+  <meta name="description" content="An advanced RAG chatbot with AI document analysis, multi-model selection, and instant insights." />
+  
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="/static/style.css" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>" />
 </head>
 <body>
   <div class="app-container">
+    <div class="bg-mesh"></div>
 
     <!-- ═══════ SIDEBAR ═══════ -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo">
-          <div class="logo-icon">🧠</div>
-          <span class="logo-text">RAG Chatbot</span>
+          <div class="logo-icon-wrapper">
+            <svg class="logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="url(#logo-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 17L12 22L22 17" stroke="url(#logo-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 12L12 17L22 12" stroke="url(#logo-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="logo-grad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#6366F1"/>
+                  <stop offset="0.5" stop-color="#A855F7"/>
+                  <stop offset="1" stop-color="#EC4899"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div class="logo-details">
+            <span class="logo-text">RAG Intelligence</span>
+            <span class="logo-badge">v2.0</span>
+          </div>
         </div>
       </div>
 
       <div class="sidebar-content">
         <!-- Model Selection -->
         <div class="sidebar-section">
-          <div class="section-title">Model</div>
+          <div class="section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Model Engine
+          </div>
           <div class="model-selector">
             <select class="model-select" id="modelSelect">
-              <option value="llama-3.3-70b-versatile">Llama 3.3 70B</option>
-              <option value="llama-3.1-8b-instant">Llama 3.1 8B Instant</option>
-              <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
+              <option value="llama-3.3-70b-versatile">⚡ Llama 3.3 70B (Versatile)</option>
+              <option value="llama-3.1-8b-instant">🚀 Llama 3.1 8B (Instant)</option>
+              <option value="mixtral-8x7b-32768">🔮 Mixtral 8x7B (32k)</option>
             </select>
           </div>
         </div>
 
         <!-- File Upload -->
         <div class="sidebar-section">
-          <div class="section-title">Upload Document</div>
+          <div class="section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload Document
+          </div>
           <div class="upload-zone" id="uploadZone">
-            <div class="upload-zone-icon">📄</div>
-            <div class="upload-zone-text">Drop a file here or click to browse</div>
-            <div class="upload-zone-hint">PDF, DOCX, or HTML</div>
+            <div class="upload-zone-icon-bg">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            </div>
+            <div class="upload-zone-text">Drop your file here or <span>browse</span></div>
+            <div class="upload-zone-hint">Supports PDF, DOCX, HTML (Max 50MB)</div>
             <input type="file" class="upload-file-input" id="fileInput" accept=".pdf,.docx,.html" />
           </div>
           <div class="upload-progress" id="uploadProgress">
             <div class="progress-bar-container">
               <div class="progress-bar" id="progressBar"></div>
             </div>
-            <div class="progress-text" id="progressText">Uploading...</div>
+            <div class="progress-info">
+              <span class="progress-text" id="progressText">Uploading & Indexing...</span>
+            </div>
           </div>
         </div>
 
         <!-- Document List -->
         <div class="sidebar-section">
-          <div class="section-title">Documents</div>
+          <div class="section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Knowledge Base
+          </div>
           <div class="doc-list" id="docList">
             <div class="doc-empty">
-              <div class="doc-empty-icon">📭</div>
-              <div>No documents uploaded yet</div>
+              <div class="doc-empty-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>
+              </div>
+              <div>No documents indexed yet</div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- New Chat Button -->
-      <button class="new-chat-btn" id="newChatBtn">
-        <span>✨</span> New Chat
-      </button>
+      <div class="sidebar-footer">
+        <button class="new-chat-btn" id="newChatBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Workspace Chat
+        </button>
+      </div>
     </aside>
 
     <!-- ═══════ MAIN CHAT ═══════ -->
     <main class="main-area">
       <!-- Chat Header -->
       <header class="chat-header">
-        <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">☰</button>
-        <h1 class="chat-header-title">Chat</h1>
-        <span class="chat-header-model" id="headerModel">Llama 3.3 70B</span>
+        <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="chat-header-info">
+          <h1 class="chat-header-title">Document Intelligence Assistant</h1>
+          <span class="chat-status-pill"><span class="status-dot"></span> Online</span>
+        </div>
+        <div class="chat-header-model-pill" id="headerModel">Llama 3.3 70B</div>
       </header>
 
       <!-- Chat Messages -->
       <div class="chat-messages" id="chatMessages">
         <div class="welcome-screen" id="welcomeScreen">
-          <div class="welcome-icon">🧠</div>
-          <h2 class="welcome-title">RAG Chatbot</h2>
-          <p class="welcome-subtitle">Upload a document and start asking questions. I'll use AI to find answers from your content.</p>
-          <div class="welcome-tips">
-            <span class="welcome-tip" data-tip="What is this document about?">💡 What is this about?</span>
-            <span class="welcome-tip" data-tip="Summarize the key points">📝 Summarize key points</span>
-            <span class="welcome-tip" data-tip="What are the main conclusions?">🎯 Main conclusions?</span>
+          <div class="welcome-badge">AI Knowledge Engine</div>
+          <h2 class="welcome-title">Ask Anything About Your Documents</h2>
+          <p class="welcome-subtitle">Upload PDFs, Word docs, or HTML files to perform instant semantic searching, summary generation, and precise Q&A powered by RAG vector retrieval.</p>
+          
+          <div class="welcome-features">
+            <div class="feature-card">
+              <div class="feature-icon">🔍</div>
+              <div class="feature-title">Semantic RAG Search</div>
+              <div class="feature-desc">Retrieves precise context from your vector store using FastEmbed.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <div class="feature-title">Groq LLM Acceleration</div>
+              <div class="feature-desc">Ultra-low latency streaming response with 70B parameter models.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🛡️</div>
+              <div class="feature-title">Private & Secure</div>
+              <div class="feature-desc">Your documents stay isolated in local/ephemeral vector memory.</div>
+            </div>
+          </div>
+
+          <div class="welcome-tips-container">
+            <div class="welcome-tips-label">Try asking:</div>
+            <div class="welcome-tips">
+              <span class="welcome-tip" data-tip="Summarize the primary topic and key takeaways of this document.">✨ Summarize the main takeaways</span>
+              <span class="welcome-tip" data-tip="What are the critical dates, metrics, or statistics mentioned?">📊 Extract key figures & metrics</span>
+              <span class="welcome-tip" data-tip="List all action items or conclusions specified in the text.">🎯 Find conclusions & action items</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Chat Input -->
+      <!-- Chat Input Area -->
       <div class="chat-input-area">
         <div class="chat-input-wrapper">
           <textarea
             class="chat-input"
             id="chatInput"
-            placeholder="Ask a question about your documents..."
+            placeholder="Ask a question about your indexed documents..."
             rows="1"
           ></textarea>
-          <button class="send-btn" id="sendBtn" title="Send message">➤</button>
+          <button class="send-btn" id="sendBtn" title="Send Question (Enter)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <div class="chat-input-footer">
+          <span>Press <strong>Enter</strong> to send, <strong>Shift + Enter</strong> for new line</span>
         </div>
       </div>
     </main>
