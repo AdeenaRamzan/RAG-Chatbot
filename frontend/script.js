@@ -312,8 +312,8 @@ async function uploadFile(file) {
     }
 
     progressBar.style.width = '100%';
-    progressText.textContent = 'Uploaded & Vectorized!';
-    showToast(`${file.name} indexed successfully`, 'success');
+    progressText.textContent = 'Uploaded & indexed!';
+    showToast(`${file.name} uploaded successfully`, 'success');
 
     setTimeout(() => {
       uploadProgress.classList.remove('active');
@@ -340,9 +340,9 @@ async function loadDocuments() {
       docList.innerHTML = `
         <div class="doc-empty">
           <div class="doc-empty-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 4v5"/></svg>
           </div>
-          <div>No documents indexed yet</div>
+          <div>No documents yet — upload one to get started!</div>
         </div>
       `;
       return;
@@ -370,7 +370,7 @@ async function loadDocuments() {
     docList.innerHTML = `
       <div class="doc-empty">
         <div class="doc-empty-icon">⚠️</div>
-        <div>Failed to load document index</div>
+        <div>Couldn't load your documents</div>
       </div>
     `;
   }
@@ -389,7 +389,7 @@ async function deleteDocument(fileId) {
     const data = await response.json();
     if (data.error) throw new Error(data.error);
 
-    showToast('Document deleted from index', 'success');
+    showToast('Document deleted', 'success');
 
     const item = document.querySelector(`.doc-item[data-id="${fileId}"]`);
     if (item) {
@@ -414,41 +414,47 @@ newChatBtn.addEventListener('click', () => {
 
   chatMessages.innerHTML = `
     <div class="welcome-screen" id="welcomeScreen">
-      <div class="welcome-badge">AI Knowledge Engine</div>
-      <h2 class="welcome-title">Ask Anything About Your Documents</h2>
-      <p class="welcome-subtitle">Upload PDFs, Word docs, or HTML files to perform instant semantic searching, summary generation, and precise Q&A powered by RAG vector retrieval.</p>
-      
+      <div class="welcome-badge">✨ Powered by RAG + Groq</div>
+      <h2 class="welcome-title">Hi! I'm your document buddy.</h2>
+      <p class="welcome-subtitle">Upload a PDF, Word doc, or HTML file and ask me anything about it — I'll dig through it and bring back the answer, fast.</p>
+
       <div class="welcome-features">
         <div class="feature-card">
-          <div class="feature-icon">🔍</div>
-          <div class="feature-title">Semantic RAG Search</div>
-          <div class="feature-desc">Retrieves precise context from your vector store using FastEmbed.</div>
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <div class="feature-title">Smart search</div>
+          <div class="feature-desc">Finds the exact answer in your files using semantic search.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <div class="feature-title">Groq LLM Acceleration</div>
-          <div class="feature-desc">Ultra-low latency streaming response with 70B parameter models.</div>
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4.5 13.5H11L9 22l9.5-13H12l1-7z"/></svg>
+          </div>
+          <div class="feature-title">Lightning fast</div>
+          <div class="feature-desc">Groq-powered inference for near-instant replies.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🛡️</div>
-          <div class="feature-title">Private & Secure</div>
-          <div class="feature-desc">Your documents stay isolated in local/ephemeral vector memory.</div>
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4Z"/></svg>
+          </div>
+          <div class="feature-title">Private by default</div>
+          <div class="feature-desc">Your documents stay in your own local storage.</div>
         </div>
       </div>
 
       <div class="welcome-tips-container">
-        <div class="welcome-tips-label">Try asking:</div>
+        <div class="welcome-tips-label">Try asking</div>
         <div class="welcome-tips">
           <span class="welcome-tip" data-tip="Summarize the primary topic and key takeaways of this document.">✨ Summarize the main takeaways</span>
-          <span class="welcome-tip" data-tip="What are the critical dates, metrics, or statistics mentioned?">📊 Extract key figures & metrics</span>
-          <span class="welcome-tip" data-tip="List all action items or conclusions specified in the text.">🎯 Find conclusions & action items</span>
+          <span class="welcome-tip" data-tip="What are the critical dates, metrics, or statistics mentioned?">📊 Pull key figures &amp; metrics</span>
+          <span class="welcome-tip" data-tip="List all action items or conclusions specified in the text.">🎯 Find conclusions &amp; action items</span>
         </div>
       </div>
     </div>
   `;
 
   bindWelcomeTips();
-  showToast('New workspace chat initialized', 'info');
+  showToast('Started a new chat', 'info');
 });
 
 // ═══════════════════════════════════════════
