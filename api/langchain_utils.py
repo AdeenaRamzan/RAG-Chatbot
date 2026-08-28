@@ -45,7 +45,7 @@ qa_prompt = ChatPromptTemplate.from_messages([
     ("human", "{input}")
 ])
 
-def get_rag_chain(model="llama-3.3-70b-versatile"):
+def get_rag_chain(model="openai/gpt-oss-120b"):
     ensure_vectorstore_populated()
     retriever = vectorstore.as_retriever(search_kwargs={"k": 6})
     llm = ChatGroq(model=model)

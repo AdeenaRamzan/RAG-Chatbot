@@ -42,16 +42,18 @@
       </div>
 
       <div class="sidebar-content">
+        <!-- Model Selection -->
         <div class="sidebar-section">
           <div class="section-title">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            AI Model
+            Model Engine
           </div>
           <div class="model-selector">
             <select class="model-select" id="modelSelect">
-              <option value="llama-3.3-70b-versatile">⚡ Llama 3.3 70B</option>
-              <option value="llama-3.1-8b-instant">🚀 Llama 3.1 8B</option>
-              <option value="mixtral-8x7b-32768">🔮 Mixtral 8x7B</option>
+              <option value="openai/gpt-oss-120b">🧠 GPT OSS 120B (High Precision)</option>
+              <option value="openai/gpt-oss-20b">⚡ GPT OSS 20B (Fast)</option>
+              <option value="qwen/qwen3.8-27b">🌐 Qwen 3.8 27B (Multilingual)</option>
+              <option value="groq/compound">🔮 Groq Compound (Reasoning)</option>
             </select>
           </div>
         </div>
@@ -113,7 +115,7 @@
           <h1 class="chat-header-title">RAG Intelligence Chatbot</h1>
           <span class="chat-status-pill"><span class="status-dot"></span> Online</span>
         </div>
-        <div class="chat-header-model-pill" id="headerModel">Llama 3.3 70B</div>
+        <div class="chat-header-model-pill" id="headerModel">GPT OSS 120B</div>
       </header>
 
       <div class="chat-messages" id="chatMessages">

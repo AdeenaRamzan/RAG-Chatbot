@@ -7,14 +7,15 @@ from datetime import datetime
 from typing import Optional
 
 class ModelName(str, Enum):
-    LLAMA_70B = "llama-3.3-70b-versatile"
-    LLAMA_8B = "llama-3.1-8b-instant"
-    MIXTRAL = "mixtral-8x7b-32768"
+    GPT_OSS_120B = "openai/gpt-oss-120b"
+    GPT_OSS_20B = "openai/gpt-oss-20b"
+    QWEN_27B = "qwen/qwen3.8-27b"
+    GROQ_COMPOUND = "groq/compound"
 
 class QueryInput(BaseModel):
     question: str
     session_id: Optional[str] = Field(default=None)
-    model: ModelName = Field(default=ModelName.LLAMA_70B)
+    model: ModelName = Field(default=ModelName.GPT_OSS_120B)
 
 class QueryResponse(BaseModel):
     answer: str
