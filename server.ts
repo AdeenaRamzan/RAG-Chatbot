@@ -553,8 +553,15 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(frontendDir, 'index.html'));
 });
 
-// Start server
-app.listen(port, '0.0.0.0', async () => {
-  console.log(`[RAG Chatbot] Server listening on http://0.0.0.0:${port}`);
-  await autoSeedDocuments();
-});
+// Export express app for serverless platforms like Vercel
+export default app;
+
+// Start server when run standalone
+if (!process.env.VERCEL) {
+  app.listen(port, '0.0.0.0', async () => {
+    console.log(`[RAG Chatbot] Server listening on http://0.0.0.0:${port}`);
+    await autoSeedDocuments();
+  });
+} else {
+  autoSeedDocuments().catch(console.error);
+}
