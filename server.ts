@@ -544,13 +544,24 @@ User Question: ${question}`;
 });
 
 // Serve frontend static assets
+const publicDir = fs.existsSync(path.join(__dirname, 'public'))
+  ? path.join(__dirname, 'public')
+  : path.join(__dirname, 'frontend');
 const frontendDir = path.join(__dirname, 'frontend');
-app.use('/static', express.static(frontendDir));
-app.use(express.static(frontendDir));
 
-// Root route serves frontend/index.html
+app.use('/static', express.static(publicDir));
+app.use(express.static(publicDir));
+if (fs.existsSync(frontendDir) && frontendDir !== publicDir) {
+  app.use('/static', express.static(frontendDir));
+  app.use(express.static(frontendDir));
+}
+
+// Root route serves index.html
 app.get('/', (req, res) => {
-  res.sendFile(path.join(frontendDir, 'index.html'));
+  const indexPath = fs.existsSync(path.join(publicDir, 'index.html'))
+    ? path.join(publicDir, 'index.html')
+    : path.join(frontendDir, 'index.html');
+  res.sendFile(indexPath);
 });
 
 // Export express app for serverless platforms like Vercel
