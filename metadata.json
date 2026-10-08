@@ -1,0 +1,7 @@
+{
+  "name": "RAG Intelligence Chatbot",
+  "description": "A friendly AI chatbot that reads your documents and answers questions instantly with RAG retrieval.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
