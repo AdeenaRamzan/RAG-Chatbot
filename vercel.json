@@ -3,7 +3,39 @@
   "outputDirectory": "public",
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/static/(.*)",
+      "destination": "/$1"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/chat",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/list-docs",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/upload-doc",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/delete-doc",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/sessions(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/doc/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/health",
       "destination": "/api/index"
     }
   ]
