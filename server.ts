@@ -556,6 +556,14 @@ if (fs.existsSync(frontendDir) && frontendDir !== publicDir) {
   app.use(express.static(frontendDir));
 }
 
+// Open Graph preview image
+app.get('/og-image.png', (req, res) => {
+  const ogPath = fs.existsSync(path.join(publicDir, 'og-image.png'))
+    ? path.join(publicDir, 'og-image.png')
+    : path.join(frontendDir, 'og-image.png');
+  res.sendFile(ogPath);
+});
+
 // Root route serves index.html
 app.get('/', (req, res) => {
   const indexPath = fs.existsSync(path.join(publicDir, 'index.html'))
